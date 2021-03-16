@@ -5,6 +5,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import Login from "./component/Login";
 import NavBar from "./component/NavBar";
 import AuthContext from "./Context";
+import SignUp from "./component/SignUp";
 
 function App() {
   function reducer(state, action) {
@@ -40,7 +41,7 @@ function App() {
       <AuthContext.Provider value={{ state, dispatch }}>
         <NavBar />
         <div className="d-flex justify-content-center">
-          <Login />
+          <SignUp />
         </div>
       </AuthContext.Provider>
     </div>
