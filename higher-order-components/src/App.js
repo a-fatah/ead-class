@@ -2,6 +2,10 @@ import React, { useState, useEffect } from "react";
 import "./App.css";
 import Container from "react-bootstrap/Container";
 import "bootstrap/dist/css/bootstrap.min.css";
+import FilterBox from "./component/FilterBox";
+import NamesList from "./component/NamesList";
+import Table from "react-bootstrap/Table";
+import DataTable from "./component/DataTable";
 
 function withFilter(Component) {
   return ({ data }) => {
@@ -15,7 +19,7 @@ function withFilter(Component) {
   };
 }
 
-function App() {
+const DataProvider = ({ render }) => {
   const [names, setNames] = useState([]);
 
   useEffect(async () => {
@@ -26,10 +30,21 @@ function App() {
     setNames(names);
   }, []);
 
+  return render(names);
+};
+
+function App() {
   const ListWithFilter = withFilter(NamesList);
+
   return (
     <Container className="d-flex justify-content-center">
-      <ListWithFilter data={names} />
+      <DataProvider
+        render={(names) => {
+          return <ListWithFilter data={names} />;
+        }}
+      />
+
+      <DataProvider render={(data) => <DataTable data={data} />} />
     </Container>
   );
 }

@@ -1,5 +1,5 @@
 import React from "react";
-
+import Form from "react-bootstrap/Form";
 const FilterBox = ({ data, onFilter }) => {
   const handleSearch = (e) => {
     const filterText = e.target.value;
