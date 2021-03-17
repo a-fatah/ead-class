@@ -4,8 +4,8 @@ import Container from "react-bootstrap/Container";
 import "bootstrap/dist/css/bootstrap.min.css";
 import FilterBox from "./component/FilterBox";
 import NamesList from "./component/NamesList";
-import Table from "react-bootstrap/Table";
 import DataTable from "./component/DataTable";
+import { BeatLoader } from "react-spinners";
 
 function withFilter(Component) {
   return ({ data }) => {
@@ -19,32 +19,69 @@ function withFilter(Component) {
   };
 }
 
-const DataProvider = ({ render }) => {
+function withSpinner(Component) {
+  return ({ loading, ...props }) => {
+    if (loading) {
+      return (
+        <div style={{ width: "200px", height: "200px" }}>
+          <BeatLoader />
+        </div>
+      );
+    }
+    return <Component {...props} />;
+  };
+}
+
+function withData(url, mapFn, Component) {
+  return (props) => (
+    <DataProvider
+      url={url}
+      mapFn={mapFn}
+      render={(loading, names) => {
+        return <Component data={names} loading={loading} {...props} />;
+      }}
+    />
+  );
+}
+
+const DataProvider = ({ url, mapFn, render }) => {
   const [names, setNames] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(async () => {
-    const json = await fetch(
-      "https://randomuser.me/api?results=10"
-    ).then((res) => res.json());
-    const names = json.results.map((result) => result.name.first);
+    setLoading(true);
+    const json = await fetch(url).then((res) => res.json());
+    const names = mapFn(json);
+    setLoading(false);
     setNames(names);
   }, []);
 
-  return render(names);
+  return render(loading, names);
 };
 
 function App() {
+  const url = "https://randomuser.me/api?results=10";
   const ListWithFilter = withFilter(NamesList);
+  const ListWithSpinner = withSpinner(ListWithFilter);
+  const TableWithSpinner = withSpinner(DataTable);
+
+  const mapFn = (json) => json.results.map((result) => result.name.first);
+
+  const ListWithSpinnerAndDataProvider = withData(
+    url,
+    mapFn,
+    withSpinner(withFilter(NamesList))
+  );
+
+  const TableWithSpinnerAndData = withData(
+    url,
+    mapFn,
+    withSpinner(withFilter(DataTable))
+  );
 
   return (
     <Container className="d-flex justify-content-center">
-      <DataProvider
-        render={(names) => {
-          return <ListWithFilter data={names} />;
-        }}
-      />
-
-      <DataProvider render={(data) => <DataTable data={data} />} />
+      <ListWithSpinnerAndDataProvider />
     </Container>
   );
 }
