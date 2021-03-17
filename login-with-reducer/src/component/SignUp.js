@@ -7,7 +7,7 @@ import { Button } from "react-bootstrap";
 export default () => {
   return (
     <div className="w-25">
-      <h3 className="display-4 text-center">Sign Up</h3>
+      <h3 className="display-5 text-center">Sign Up</h3>
       <Formik
         initialValues={{
           firstName: "test",

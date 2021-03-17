@@ -25,7 +25,7 @@ export default () => {
 
   return (
     <div className="w-25">
-      <h3 className="display-4 text-center">Login</h3>
+      <h3 className="display-5 text-center">Login</h3>
       {state.error ? <Alert variant="danger">{state.error}</Alert> : ""}
       <Form.Group>
         <Form.Label>Username</Form.Label>
